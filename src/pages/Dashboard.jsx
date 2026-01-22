@@ -1,47 +1,55 @@
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import { Users, MessageSquare, Calendar, Briefcase, TrendingUp } from 'lucide-react';
-import { alumniAPI, forumAPI, eventAPI, jobAPI } from '../services/api';
+import { Users, MessageSquare, Calendar, Briefcase } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+
+const MOCK_DATA = {
+  stats: { totalAlumni: 1250 },
+  forums: [
+    { id: 1, title: 'Diskusi Teknologi Terkini', author: { fullName: 'John Doe' }, category: 'Technology' },
+    { id: 2, title: 'Tips Karir untuk Fresh Graduate', author: { fullName: 'Jane Smith' }, category: 'Career' },
+    { id: 3, title: 'Reuni Angkatan 2020', author: { fullName: 'Bob Wilson' }, category: 'Event' }
+  ],
+  events: [
+    { id: 1, title: 'Tech Talk: AI & Machine Learning', startDate: '2026-02-15', eventType: 'online' },
+    { id: 2, title: 'Alumni Gathering 2026', startDate: '2026-03-01', eventType: 'offline' },
+    { id: 3, title: 'Career Fair ADMA', startDate: '2026-03-20', eventType: 'hybrid' }
+  ],
+  jobs: [
+    { id: 1, title: 'Frontend Developer', company: 'Tech Startup', jobType: 'full-time', location: 'Jakarta' },
+    { id: 2, title: 'Backend Engineer', company: 'E-Commerce Co', jobType: 'full-time', location: 'Bandung' },
+    { id: 3, title: 'UI/UX Designer', company: 'Design Studio', jobType: 'contract', location: 'Remote' },
+    { id: 4, title: 'Data Analyst', company: 'Finance Corp', jobType: 'full-time', location: 'Jakarta' }
+  ]
+};
 
 export default function Dashboard() {
   const { user } = useAuthStore();
-  const { data: stats } = useQuery('alumni-stats', alumniAPI.getStats);
-  const { data: recentForums } = useQuery('recent-forums', () => 
-    forumAPI.getForums({ limit: 5 })
-  );
-  const { data: upcomingEvents } = useQuery('upcoming-events', () =>
-    eventAPI.getEvents({ upcoming: true, limit: 5 })
-  );
-  const { data: recentJobs } = useQuery('recent-jobs', () =>
-    jobAPI.getJobs({ limit: 5 })
-  );
 
   const statCards = [
     {
       title: 'Total Alumni',
-      value: stats?.data?.totalAlumni || 0,
+      value: MOCK_DATA.stats.totalAlumni,
       icon: Users,
       color: 'bg-blue-500',
       link: '/alumni'
     },
     {
       title: 'Forum Aktif',
-      value: recentForums?.data?.length || 0,
+      value: MOCK_DATA.forums.length,
       icon: MessageSquare,
       color: 'bg-green-500',
       link: '/forum'
     },
     {
       title: 'Event Mendatang',
-      value: upcomingEvents?.data?.length || 0,
+      value: MOCK_DATA.events.length,
       icon: Calendar,
       color: 'bg-purple-500',
       link: '/events'
     },
     {
       title: 'Lowongan Kerja',
-      value: recentJobs?.data?.length || 0,
+      value: MOCK_DATA.jobs.length,
       icon: Briefcase,
       color: 'bg-orange-500',
       link: '/jobs'
@@ -90,7 +98,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {recentForums?.data?.map((forum) => (
+            {MOCK_DATA.forums.map((forum) => (
               <Link
                 key={forum.id}
                 to={`/forum/${forum.id}`}
@@ -98,7 +106,7 @@ export default function Dashboard() {
               >
                 <h3 className="font-medium text-gray-900">{forum.title}</h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  oleh {forum.author?.fullName} • {forum.category}
+                  oleh {forum.author.fullName} • {forum.category}
                 </p>
               </Link>
             ))}
@@ -113,7 +121,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {upcomingEvents?.data?.map((event) => (
+            {MOCK_DATA.events.map((event) => (
               <Link
                 key={event.id}
                 to={`/events/${event.id}`}
@@ -137,7 +145,7 @@ export default function Dashboard() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {recentJobs?.data?.map((job) => (
+          {MOCK_DATA.jobs.map((job) => (
             <Link
               key={job.id}
               to={`/jobs/${job.id}`}

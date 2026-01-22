@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authAPI } from '../../services/api';
+import { mockLogin } from '../../services/mockAuth';
 import { useAuthStore } from '../../store/authStore';
 import { LogIn } from 'lucide-react';
+
+const USE_MOCK = true;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,7 +19,11 @@ export default function Login() {
     try {
       setLoading(true);
       setError('');
-      const response = await authAPI.login(data);
+      
+      const response = USE_MOCK 
+        ? await mockLogin(data.email, data.password)
+        : await authAPI.login(data);
+        
       setAuth(response.data.user, response.data.token);
       navigate('/dashboard');
     } catch (err) {
@@ -93,8 +100,16 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <p className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</p>
+            <div className="space-y-1 text-sm text-blue-800">
+              <p><strong>Alumni:</strong> alumni@admauni.ac.id / password123</p>
+              <p><strong>Admin:</strong> admin@admauni.ac.id / admin123</p>
+            </div>
+          </div>
+          
+          <p className="text-gray-600 text-center">
             Belum punya akun?{' '}
             <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
               Daftar sekarang

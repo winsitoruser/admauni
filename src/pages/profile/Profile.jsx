@@ -1,16 +1,48 @@
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Briefcase, Edit, Calendar } from 'lucide-react';
-import { profileAPI } from '../../services/api';
+import { useAuthStore } from '../../store/authStore';
+
+const MOCK_PROFILE = {
+  user: {
+    fullName: 'John Doe Alumni',
+    nim: '2019001',
+    email: 'alumni@admauni.ac.id'
+  },
+  major: 'Teknik Informatika',
+  faculty: 'Teknik',
+  graduationYear: 2023,
+  phone: '081234567890',
+  city: 'Jakarta',
+  province: 'DKI Jakarta',
+  currentPosition: 'Senior Developer',
+  currentCompany: 'Tech Company',
+  bio: 'Passionate software engineer with 3+ years of experience in web development. Alumni ADMA University majoring in Computer Science.',
+  skills: ['JavaScript', 'React', 'Node.js', 'PostgreSQL', 'TailwindCSS'],
+  interests: ['Technology', 'Programming', 'Innovation', 'Open Source'],
+  workHistory: [
+    {
+      id: 1,
+      position: 'Senior Developer',
+      company: 'Tech Company',
+      startDate: '2024-01-01',
+      isCurrent: true,
+      description: 'Leading frontend development team, building scalable web applications.'
+    },
+    {
+      id: 2,
+      position: 'Junior Developer',
+      company: 'Startup Inc',
+      startDate: '2023-06-01',
+      endDate: '2023-12-31',
+      isCurrent: false,
+      description: 'Developed and maintained web applications using React and Node.js.'
+    }
+  ]
+};
 
 export default function Profile() {
-  const { data: profile, isLoading } = useQuery('my-profile', profileAPI.getProfile);
-
-  if (isLoading) {
-    return <div className="text-center py-12">Loading...</div>;
-  }
-
-  const profileData = profile?.data;
+  const { user } = useAuthStore();
+  const profileData = MOCK_PROFILE;
 
   return (
     <div className="space-y-6">
